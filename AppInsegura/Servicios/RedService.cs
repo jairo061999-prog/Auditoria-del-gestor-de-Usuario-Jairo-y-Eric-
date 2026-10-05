@@ -21,12 +21,12 @@ namespace AppInsegura.Servicios
         // CORRECCIÓN: devuelve true/false; el detalle técnico NO se muestra al usuario (apuntes §8).
         public bool EnviarPuntuacion(string nombreUsuario, int puntuacion, string tokenSesion)
         {
-            // CORRECCIÓN (apuntes §1): validar antes de enviar.
+            // CORRECCIÓN (apuntes del error 1): validar antes de enviar.
             if (!AuthService.NombreValido(nombreUsuario) || puntuacion < 0 || puntuacion > PuntuacionMaxima ||
                 string.IsNullOrEmpty(tokenSesion))
                 return false;
 
-            // CORRECCIÓN (apuntes §6): fallar de forma segura: si por error se configurase HTTP, no se envía nada.
+            // CORRECCIÓN (apuntes del error 6): fallar de forma segura: si por error se configurase HTTP, no se envía nada.
             if (!UrlServidor.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
             {
                 Registro.Error("URL del servidor no es HTTPS; envío cancelado.");
@@ -39,7 +39,7 @@ namespace AppInsegura.Servicios
             }
             catch (Exception ex)
             {
-                // CORRECCIÓN (apuntes §8): detalle técnico -> registro interno (sin datos sensibles). Al usuario, mensaje genérico.
+                // CORRECCIÓN (apuntes del error 8): detalle técnico -> registro interno (sin datos sensibles). Al usuario, mensaje genérico.
                 Registro.Error($"Fallo de red al sincronizar: {ex.GetType().Name}");
                 return false;
             }
@@ -47,11 +47,10 @@ namespace AppInsegura.Servicios
 
         private async Task<bool> EnviarPuntuacionAsync(string nombreUsuario, int puntuacion, string tokenSesion)
         {
-            // CORRECCIÓN (apuntes §6): se mantiene la validación de certificados por defecto (NO se desactiva).
+            // CORRECCIÓN (apuntes del error 6): se mantiene la validación de certificados por defecto (NO se desactiva).
             using var cliente = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
 
             // CORRECCIÓN: los datos van en el cuerpo (POST + JSON), no en la URL, y el token en la cabecera.
-            // Así no quedan en logs de proxies/servidores ni hay inyección de parámetros en la query string.
             var peticion = new HttpRequestMessage(HttpMethod.Post, UrlServidor)
             {
                 Content = new StringContent(
@@ -59,7 +58,6 @@ namespace AppInsegura.Servicios
                     Encoding.UTF8, "application/json")
             };
             peticion.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenSesion);
-
             // CORRECCIÓN: ya no se imprime la URL (con la api_key) por pantalla.
             HttpResponseMessage respuesta = await cliente.SendAsync(peticion);
             return respuesta.IsSuccessStatusCode;
