@@ -5,8 +5,6 @@ using AppInsegura.Modelos;
 
 namespace AppInsegura.Datos
 {
-    // Simula una tabla de base de datos (equivalente a una tabla SQLite/sqflite).
-    // No usa un motor real para que el proyecto compile sin dependencias externas.
     public class BaseDatosUsuarios
     {
         private readonly List<Usuario> usuarios = new List<Usuario>();
@@ -18,12 +16,11 @@ namespace AppInsegura.Datos
 
         // CORRECCIÓN (apuntes: mínimo privilegio / no confiar en la entrada):
         // antes devolvía la lista interna (con hashes y modificable desde fuera).
-        // Ahora devuelve una copia de solo lectura.
+        // Y devuelve una copia de solo lectura.
         public IReadOnlyList<Usuario> ListarTodos()
         {
             return usuarios.ToList().AsReadOnly();
         }
-
         public Usuario? BuscarExacto(string nombre)
         {
             // CORRECCIÓN: comparación sin distinguir mayúsculas para evitar
@@ -31,8 +28,7 @@ namespace AppInsegura.Datos
             return usuarios.FirstOrDefault(u =>
                 string.Equals(u.Nombre, nombre, StringComparison.OrdinalIgnoreCase));
         }
-
-        // CORRECCIÓN (apuntes §2 "Consultas parametrizadas"):
+        // CORRECCIÓN (apuntes del error 2 "Consultas parametrizadas"):
         // la consulta es una constante y el valor del usuario viaja SIEMPRE como
         // parámetro (@nombre), nunca concatenado dentro del texto SQL.
         public Usuario? BuscarPorNombre(string nombreBuscado)
@@ -42,16 +38,15 @@ namespace AppInsegura.Datos
             return EjecutarConsultaParametrizada(consulta, parametros);
         }
 
-        // CORRECCIÓN (apuntes §2): simulación de un motor SQL con parámetros: el valor se trata como DATO,
+        // CORRECCIÓN (apuntes del error 2): simula un SQL con parámetros: el valor se trata como DATO,
         // nunca se interpreta como parte de la consulta.
         // CORRECCIÓN: se elimina el Console.WriteLine("[DB] ...") que mostraba la consulta.
         private Usuario? EjecutarConsultaParametrizada(string consulta, Dictionary<string, string> parametros)
         {
             if (consulta != "SELECT * FROM usuarios WHERE nombre = @nombre")
             {
-                return null; // fallar de forma segura
+                return null; 
             }
-
             string nombre = parametros["@nombre"];
             return usuarios.FirstOrDefault(u => u.Nombre == nombre);
         }
