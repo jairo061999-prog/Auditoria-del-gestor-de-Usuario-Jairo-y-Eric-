@@ -9,7 +9,7 @@ namespace AppInsegura.Servicios
 {
     public class RedService
     {
-        // CORRECCIÓN (apuntes §4 y §6):
+        // CORRECCIÓN (apuntes del error 4 y 6):
         //  - Se elimina la ApiKey "sk_live_..." escrita en el código: en una app cliente NO hay secretos.
         //    La clave real vive en el servidor; el cliente se identifica con el token de sesión del usuario.
         //  - La URL pasa de HTTP a HTTPS y puede configurarse sin recompilar.
