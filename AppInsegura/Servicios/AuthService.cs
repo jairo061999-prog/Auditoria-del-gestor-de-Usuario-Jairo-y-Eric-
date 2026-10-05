@@ -12,17 +12,17 @@ namespace AppInsegura.Servicios
     {
         private readonly BaseDatosUsuarios baseDatos;
 
-        // CORRECCIÓN (apuntes §3): hash lento con sal -> PBKDF2-SHA256 (antes MD5 sin sal).
+        // CORRECCIÓN (apuntes del error 3): hash lento con sal -> PBKDF2-SHA256 (antes MD5 sin sal).
         private const int Iteraciones = 210_000;
         private const int TamanoSal = 16;
         private const int TamanoHash = 32;
 
-        // CORRECCIÓN (apuntes §1): validación por lista blanca.
+        // CORRECCIÓN (apuntes del error 1): validación por lista blanca.
         private static readonly Regex PatronNombre = new Regex("^[A-Za-z0-9_]{3,20}$", RegexOptions.Compiled);
         public const int LongitudMinimaContrasena = 8;
         public const int LongitudMaximaContrasena = 64;
 
-        // CORRECCIÓN (apuntes §1): protección básica contra fuerza bruta (defensa en profundidad).
+        // CORRECCIÓN (apuntes del error 1): protección básica contra fuerza bruta (defensa en profundidad).
         private const int MaxIntentosFallidos = 5;
         private static readonly TimeSpan TiempoBloqueo = TimeSpan.FromMinutes(5);
         private readonly Dictionary<string, (int intentos, DateTime? bloqueadoHasta)> intentos =
