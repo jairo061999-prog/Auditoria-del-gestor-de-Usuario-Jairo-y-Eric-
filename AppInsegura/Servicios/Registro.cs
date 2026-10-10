@@ -3,7 +3,7 @@ using System.IO;
 
 namespace AppInsegura.Servicios
 {
-    // CORRECCIÓN - NUEVO (apuntes del error 8): registro interno para el desarrollador y los técnicos.
+    // CORRECCIÓN - (apuntes del error 8): registro interno para el desarrollador y los técnicos.
     // Al usuario solo se le muestran mensajes genéricos.
     public static class Registro
     {
