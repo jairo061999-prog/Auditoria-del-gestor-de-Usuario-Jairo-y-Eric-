@@ -83,7 +83,7 @@ namespace AppInsegura.Servicios
             if (!NombreValido(nombre) || string.IsNullOrEmpty(contrasena) || // CORRECCIÓN (apuntes del error 1): se valida la entrada antes de usarla.
                 contrasena.Length > LongitudMaximaContrasena)
                 return null;
-            if (EstaBloqueado(nombre)) // CORRECCIÓN (apuntes §1): bloqueo anti fuerza bruta.
+            if (EstaBloqueado(nombre)) // CORRECCIÓN (apuntes del error 1): bloqueo anti fuerza bruta.
                 return null;
 
             Usuario? usuario = baseDatos.BuscarExacto(nombre);

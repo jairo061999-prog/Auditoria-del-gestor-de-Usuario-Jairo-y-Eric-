@@ -18,7 +18,7 @@ namespace AppInsegura.Servicios
 
         private const int PuntuacionMaxima = 1_000_000;
 
-        // CORRECCIÓN: devuelve true/false; el detalle técnico NO se muestra al usuario (apuntes §8).
+        // CORRECCIÓN: devuelve true/false; el detalle técnico NO se muestra al usuario (apuntes del error 8).
         public bool EnviarPuntuacion(string nombreUsuario, int puntuacion, string tokenSesion)
         {
             // CORRECCIÓN (apuntes del error 1): validar antes de enviar.

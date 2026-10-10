@@ -36,12 +36,12 @@ namespace AppInsegura
                         case "4": VerPerfil(); break;
                         case "5": PanelAdministracion(); break;
                         case "6": SincronizarConServidor(); break;
-                        case "7": CerrarSesion(); break; // CORRECCIÓN (apuntes §5): nueva opción para cerrar sesión y borrar el token.
+                        case "7": CerrarSesion(); break; // CORRECCIÓN (apuntes del error 5): nueva opción para cerrar sesión y borrar el token.
                         case "0": salir = true; break;
                         default: Console.WriteLine("Opción no válida."); break;
                     }
                 }
-                // CORRECCIÓN (apuntes §8): errores previstos (validación / permisos): mensajes pensados para el usuario.
+                // CORRECCIÓN (apuntes del error 8): errores previstos (validación / permisos): mensajes pensados para el usuario.
                 catch (ArgumentException ex)
                 {
                     Console.WriteLine(ex.Message);
@@ -50,8 +50,8 @@ namespace AppInsegura
                 {
                     Console.WriteLine("Acceso denegado.");
                 }
-                // CORRECCIÓN (apuntes §8): antes se mostraba ex.ToString() (traza completa).
-                // Ahora: mensaje genérico al usuario y detalle técnico al registro interno.
+                // CORRECCIÓN (apuntes del error 8): antes se mostraba ex.ToString() (traza completa).
+                // Ahora muestra un mensaje genérico al usuario y detalle técnico al registro interno.
                 catch (Exception ex)
                 {
                     Console.WriteLine("Ha ocurrido un error.");
@@ -64,11 +64,9 @@ namespace AppInsegura
             Console.WriteLine("Hasta luego.");
         }
 
-        // CORRECCIÓN (apuntes §3 y §4) - USUARIOS DE PRUEBA del ejercicio: admin/admin1234 y ana/ana2024.
-        // - Se guardan SOLO como hash PBKDF2 con sal (nunca en claro en la base) y ya NO se
-        //   muestran por pantalla al arrancar.
-        // - Son contraseñas conocidas, válidas únicamente para esta práctica: en una aplicación real
-        //   no se dejarían escritas en el código (apuntes §4).
+        // CORRECCIÓN (apuntes del error 3 y error 4) - USUARIOS DE PRUEBA del ejercicio: admin/admin1234 y ana/ana2024.
+        // Por seguridad, la contraseña se guarda con hash PBKDF2 y sal (nunca en limpio) y ya no la mostramos por pantalla al iniciar.
+        // - Son contraseñas conocidas, válidas únicamente para esta práctica: en una aplicación real no se dejarían escritas en el código (apuntes del error 4).
         // - Si se define APPINSEGURA_ADMIN_PASSWORD, esa será la contraseña del admin en lugar de admin1234.
         private static void CargarUsuariosDePrueba()
         {
@@ -93,13 +91,13 @@ namespace AppInsegura
             Console.WriteLine("2. Iniciar sesión");
             Console.WriteLine("3. Buscar usuario por nombre");
             Console.WriteLine("4. Ver mi perfil");
-            // CORRECCIÓN (apuntes §7): ocultar la opción es solo cosmética: la comprobación real se hace en AuthService.
+            // CORRECCIÓN (apuntes del error 7): ocultar la opción es solo cosmética: la comprobación real se hace en AuthService.
             if (auth.EsAdministrador(usuarioActual))
             {
                 Console.WriteLine("5. Panel de administración");
             }
             Console.WriteLine("6. Sincronizar partida con el servidor");
-            Console.WriteLine("7. Cerrar sesión"); // CORRECCIÓN (apuntes §5): opción nueva.
+            Console.WriteLine("7. Cerrar sesión"); // CORRECCIÓN (apuntes del error 5): opción nueva.
             Console.WriteLine("0. Salir");
             Console.Write("Elige una opción: ");
         }
@@ -111,7 +109,7 @@ namespace AppInsegura
             Console.Write("Contraseña: ");
             string contrasena = LeerContrasena();
 
-            // CORRECCIÓN (apuntes §1): la validación y las reglas están en AuthService (lanza ArgumentException si no son válidas).
+            // CORRECCIÓN (apuntes del error 1): la validación y las reglas están en AuthService (lanza ArgumentException si no son válidas).
             Usuario nuevo = auth.Registrar(nombre, contrasena);
             // CORRECCIÓN: ya no se muestra el rol asignado.
             Console.WriteLine($"Usuario '{nuevo.Nombre}' registrado correctamente.");
@@ -127,7 +125,7 @@ namespace AppInsegura
             Usuario? usuario = auth.IniciarSesion(nombre, contrasena);
             if (usuario == null)
             {
-                // CORRECCIÓN (apuntes §8): mensaje genérico, no distingue usuario inexistente / contraseña errónea / cuenta bloqueada.
+                // CORRECCIÓN (apuntes del error 8): mensaje genérico, no distingue usuario inexistente / contraseña errónea / cuenta bloqueada.
                 Console.WriteLine("Usuario o contraseña incorrectos.");
                 return;
             }
@@ -136,7 +134,7 @@ namespace AppInsegura
             Console.WriteLine($"Bienvenido, {usuario.Nombre}.");
         }
 
-        private static void CerrarSesion() // CORRECCIÓN (apuntes §5): al cerrar sesión se borra el token.
+        private static void CerrarSesion() // CORRECCIÓN (apuntes del error 5): al cerrar sesión se borra el token.
         {
             if (usuarioActual != null)
             {
@@ -148,7 +146,7 @@ namespace AppInsegura
 
         private static void BuscarUsuario()
         {
-            // CORRECCIÓN (apuntes §7): antes cualquiera (sin sesión) podía buscar y ver el rol.
+            // CORRECCIÓN (apuntes del error 7): antes cualquiera (sin sesión) podía buscar y ver el rol.
             if (usuarioActual == null)
             {
                 Console.WriteLine("Primero debes iniciar sesión.");
@@ -158,7 +156,7 @@ namespace AppInsegura
             Console.Write("Nombre a buscar: ");
             string nombre = (Console.ReadLine() ?? "").Trim();
 
-            // CORRECCIÓN (apuntes §1 y §2): la entrada se valida en el servicio y la consulta va parametrizada.
+            // CORRECCIÓN (apuntes del error 1 y error 2): la entrada se valida en el servicio y la consulta va parametrizada.
             bool existe = auth.ExisteUsuario(usuarioActual, nombre);
             Console.WriteLine(existe
                 ? $"Encontrado: {nombre}"
@@ -175,12 +173,12 @@ namespace AppInsegura
 
             Console.WriteLine($"Nombre: {usuarioActual.Nombre}");
             Console.WriteLine($"Rol: {usuarioActual.Rol}");
-            // CORRECCIÓN (apuntes §8): se elimina "Token de sesión: ..." de la pantalla.
+            // CORRECCIÓN (apuntes del error 8): se elimina "Token de sesión: ..." de la pantalla.
         }
 
         private static void PanelAdministracion()
         {
-            // CORRECCIÓN (apuntes §7): la autorización se comprueba al ejecutar la acción
+            // CORRECCIÓN (apuntes del error 7): la autorización se comprueba al ejecutar la acción
             // (ListarUsuarios lanza UnauthorizedAccessException si no eres admin),
             // no solo ocultando la opción del menú.
             var usuarios = auth.ListarUsuarios(usuarioActual);
@@ -204,7 +202,7 @@ namespace AppInsegura
             // NOTA: el servidor debe recalcular/verificar la puntuación; el cliente no es de fiar.
             // El valor 1000 es solo la simulación original del ejercicio.
             var red = new RedService();
-            bool ok = red.EnviarPuntuacion(usuarioActual.Nombre, 1000, usuarioActual.TokenSesion); // CORRECCIÓN (apuntes §4): se envía el token de sesión, no una clave fija.
+            bool ok = red.EnviarPuntuacion(usuarioActual.Nombre, 1000, usuarioActual.TokenSesion); // CORRECCIÓN (apuntes del error 4): se envía el token de sesión, no una clave fija.
 
             Console.WriteLine(ok
                 ? "Partida sincronizada."
